@@ -13,15 +13,17 @@ class Dashboard extends Controller
 
     public function record($id)
     {
+        //pemanggilan model dan session
         $model = new RecordModel();
         $session = session();
 
+        //pencarian data berdasarkan id pada database
 		$data['record'] = $model->where('account_id', $id)->findAll();
         
+        //pengecekan session terhadap request berdasarkan id
         if(!$data['record'] || $id != $session->get('account_id')){
 			throw PageNotFoundException::forPageNotFound();
 		}
-        //var_dump($data);
         // kirim data ke view
 		echo view('account/record', $data);
     }

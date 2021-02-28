@@ -14,8 +14,11 @@ class Calculator extends Controller
 
     public function count()
     {
+        //menyiapkan helper dan session
         helper(['form']);
         $session = session();
+
+        //mengambil data dari form
         $data = [
             'tinggi_badan'      => $this->request->getVar('tinggi_badan'),
             'lingkar_pinggang'  => $this->request->getVar('lingkar_pinggang'),
@@ -23,6 +26,8 @@ class Calculator extends Controller
             'hasil'             => 0,
             'keterangan'        => ''
         ];
+
+        //menentukan jenis kelamin berdasarkan session (jika tersedia)
         if ($session->get('logged_in') == 1){
             $data['j_kelamin'] = $session->get('gender');
         }
@@ -41,6 +46,7 @@ class Calculator extends Controller
         switch($data['j_kelamin'])
         {
             case 'P' :
+                //keterangan untuk output pria
                     if ($data['hasil'] >= 25)
                     {
                         $data['keterangan'] = 'sudah tergolong obesitas.';
@@ -62,7 +68,9 @@ class Calculator extends Controller
                         $data['keterangan'] = 'kamu memiliki essential fat.';
                     }
                     break;
+                
             case 'W' :
+                //keterangan untuk output wanita
                     if ($data['hasil'] >= 32)
                     {
                         $data['keterangan'] = 'sudah tergolong obesitas.';
@@ -85,7 +93,7 @@ class Calculator extends Controller
                     }
                     break;
             default :
-                    $data['keterangan'] = 'Tidak ada';
+                    $data['keterangan'] = 'Tidak memilih jenis kelamin sehingga tidak dapat ditentukan !';
         }
         //menampilkan hasil
         return view('calculator/result', $data);
@@ -94,9 +102,7 @@ class Calculator extends Controller
     public function save($tb, $lp, $result){
         $session = session();
         $model = new RecordModel;
-        // echo "hasil ".$result;
-        // echo "hasil ".$tb;
-        // echo "hasil ".$lp;
+
         if ($session->get('logged_in') == 1){
             $data = [
                 'account_id'    => $session->get('account_id'),
